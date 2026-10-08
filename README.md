@@ -1,4 +1,61 @@
 
+# Frequence Banane
+Bonchour, SPX-GC a le repo public pour SPX-Solo. SPX solo n'inclus pas les appel API mais en fouillant dans les branches github, j'ai trouver le code en clair. Donc j'ai remodifier le code, vous pouvez voir l'historique des commits. 
+La suite à été réaliser avec Claude pour un peu laisser une trace des modifs. 
+
+
+This is the Frequence Banane fork of SPX Graphics Controller, maintained on the `Frequence_Banane` branch. The rest of this README, after this section, is the original SPX documentation.
+
+### Why
+
+Starting with version 1.4.0, SPX Graphics became "SPX Solo". Most of the HTTP API (`/api/v1/...`) was replaced by placeholders that answer `501 Not Implemented – This API endpoint is not available in SPX Solo`. Those endpoints are now reserved for the paid SPX Production / Broadcast licenses.
+
+We need these endpoints to control graphics from external tools (Stream Deck, Companion, scripts, etc.). So we brought back the original open-source code that existed before 1.4.0.
+
+### What was modified
+
+**1. API endpoints restored** ([routes/routes-api-v1.js](routes/routes-api-v1.js))
+
+None of this code is new. Every endpoint was copied from this repository's own history, commit `3bfa2c8` ("Merge pull request #155", the last 1.3.x version before 1.4.0). The same code is also on the `dev-1.3.4` and `dependabot/*` branches. The only changes are the indentation and a comment saying where the code comes from. The helper functions these endpoints use still exist in 1.4.x and haven't changed.
+
+| Method | Endpoint | What it does |
+|---|---|---|
+| GET | `/api/v1/item/play/:id` | Play an item of the open rundown by its ID |
+| GET | `/api/v1/item/continue/:id` | Send "continue" to an item by its ID |
+| GET | `/api/v1/item/stop/:id` | Stop an item by its ID |
+| GET | `/api/v1/invokeTemplateFunction?...` | Call a JavaScript function inside a playing template |
+| GET | `/api/v1/invokeExtensionFunction?...` | Call a function in an SPX extension |
+| POST | `/api/v1/directplayout` | Fill a template and play / continue / stop it without a rundown |
+| GET | `/api/v1/directplayout` | Returns a help message (only POST does something) |
+| GET | `/api/v1/controlRundownItemByID?file=Project/Rundown&item=ID&command=play` | Play / stop an item of any rundown file |
+| GET | `/api/v1/getprojects` | List projects |
+| GET | `/api/v1/getrundowns?project=...` | List the rundowns of a project |
+| GET | `/api/v1/allrundowns` | List all projects and their rundowns |
+| GET | `/api/v1/gettemplates?project=...` | List the templates of a project |
+| GET | `/api/v1/getlayerstate` | Show which item is on air on each web-playout layer |
+| GET | `/api/v1/rundown/get` | Return the currently loaded rundown as JSON |
+| GET | `/api/v1/rundown/json?project=...&rundown=...` | Return a specific rundown as JSON |
+| POST | `/api/v1/rundown/json` | Create or overwrite a rundown file |
+| GET | `/api/v1/executeScript?file=...` | Run a script located in `ASSETS/scripts` |
+| GET | `/api/v1/getFileList?assetsfolder=...` | List the files in a subfolder of `ASSETS` |
+| POST | `/api/v1/saveCustomJSON` | Save a JSON file in `ASSETS/json` |
+
+These endpoints were already working in 1.4.x and haven't changed: `version`, `panic`, `feedproxy`, `rundown/load`, `rundown/focusFirst|Next|Previous|Last|ByID/:id`, `rundown/stopAllLayers`, `item/play|continue|stop` (focused item).
+
+On the built-in help page `http://<server>:5656/api/v1`, the restored endpoints no longer show as disabled.
+
+**2. API key check disabled** ([utils/spx_auth.js](utils/spx_auth.js))
+
+`validateIfApiKey()` and `CheckAPIKey()` now let a request through even if the `apikey` is missing or wrong. A warning is still written to the log. The changed lines are marked `//TAL false` / `//false`. This lets external tools call the API without handling a key.
+
+> ⚠️ **Security:** with this change, **anyone who can reach the SPX server on the network can control it**, including `executeScript`, which runs files from `ASSETS/scripts`. Only use it on a trusted, closed network. To turn protection back on, put back `return [false, message];` / `return false;` in `utils/spx_auth.js`.
+
+**3. Demo project adjusted**
+
+`DATAROOT/MyFirstProject` (rundown and profile) was modified for our tests. For example, the item ID is `test`, there's a Frequence Banane hashtag, a LiveU Dark theme, and a chroma background in the preview. The `package-lock.json` version number was also updated to 1.4.1.
+
+---
+
 # SPX Graphics Controller
 
 **Manage and control HTML graphics in live production.**

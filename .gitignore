@@ -4,6 +4,7 @@
 ._*
 *.gz
 *.md
+!README_DEV.md
 *.7z
 *.mov
 *.mp4
