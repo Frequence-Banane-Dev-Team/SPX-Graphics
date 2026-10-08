@@ -382,8 +382,8 @@
   ],
   "warning": "Modifications done in the SPX will overwrite this file.",
   "copyright": "(c) 2020- SPX Graphics (https://spxgraphics.com)",
-  "updated": "2026-03-09T19:08:11.336Z",
+  "updated": "2026-07-29T19:00:10.614Z",
   "general": {
-    "background": ""
+    "background": "media/images/hd/chroma.png"
   }
 }

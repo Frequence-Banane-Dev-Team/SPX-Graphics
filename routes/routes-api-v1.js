@@ -688,17 +688,38 @@ router.get('/rundown/focusByID/:id', spxAuth.CheckAPIKey, async (req, res) => {
 
 
 router.get('/item/play/:id', spxAuth.CheckAPIKey, async (req, res) => {
-	res.status(501).json(notInSolo);
+	let dataOut = {};
+	dataOut.status  = 200;
+	dataOut.message = 'OK';
+	dataOut.info    = ack2
+	dataOut.APIcmd  = 'ItemPlayID';
+	dataOut.itemID  = req.params.id;
+	io.emit('SPXMessage2Controller', dataOut);
+	res.status(200).json(dataOut);
 });  // end item play by ID
  
 
 router.get('/item/continue/:id', spxAuth.CheckAPIKey, async (req, res) => {
-	res.status(501).json(notInSolo);
+	let dataOut = {};
+	dataOut.status  = 200;
+	dataOut.message = 'OK';
+	dataOut.info    = ack2
+	dataOut.APIcmd  = 'ItemContinueID';
+	dataOut.itemID  = req.params.id;
+	io.emit('SPXMessage2Controller', dataOut);
+	res.status(200).json(dataOut);
 }); // end item continue by ID
 
 
 router.get('/item/stop/:id', spxAuth.CheckAPIKey, async (req, res) => {
-	res.status(501).json(notInSolo);
+	let dataOut = {};
+	dataOut.status  = 200;
+	dataOut.message = 'OK';
+	dataOut.info    = ack2
+	dataOut.APIcmd  = 'ItemStopID';
+	dataOut.itemID  = req.params.id;
+	io.emit('SPXMessage2Controller', dataOut);
+	res.status(200).json(dataOut);
 }); // end item stop by ID
 
 

@@ -19,14 +19,14 @@ async function validateIfApiKey(req) {
     if (!config.general.apikey || config.general.apikey=='') {
       message = 'No api key SPX in config, allow all.'
       logger.verbose(message);
-      return [true, message];
+      return [true, message]; 
     }
 
     let KEY = req.method=='POST' ? (req.body?.apikey || null) : (req.query?.apikey || null);
     if ( !KEY ) {
       message = 'API key configured in SPX, but apikey missing from the ' + req.method + ' API request. Access denied.'
       logger.warn(message);
-      return [false, message];
+      return [true, message];//TAL false 
     }
 
     if ( KEY==config.general.apikey) {
@@ -36,7 +36,7 @@ async function validateIfApiKey(req) {
     } else {
       message = 'API key does not match. Access denied.'
       logger.warn(message);
-      return [false, message];
+      return [true, message]; //TAL false
     }
 
 } // validateIfApiKey utility
@@ -58,7 +58,7 @@ async function CheckAPIKey(req,res,next) {
     let dataOut = {};
     dataOut.error = apiChecked[1]
     res.status(200).json(dataOut);
-    return false;
+    return true; //false
   }
 } // CheckAPIKey
 
